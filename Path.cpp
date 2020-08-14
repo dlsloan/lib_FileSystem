@@ -117,7 +117,7 @@ void Path::verifyPartName(Base::String& part) const
   }
 }
 
-size_t Path::count() const
+size_t Path::length() const
 {
   return parts_.count();
 }
@@ -130,7 +130,7 @@ bool Path::isAbsolute() const
 Path Path::trimExt() const
 {
   Path ret(*this);
-  if (ret.count() == 0)
+  if (ret.length() == 0)
     return ret;
   if (ret.parts_[-1].contains("."))
     ret.parts_[-1] = ret.parts_[-1].substring(0, ret.parts_[-1].indexOfR("."));
@@ -257,4 +257,14 @@ void Path::createDir() const
   if (!dirExists())
     mkdir(toString().c_str(), 0700);
 #endif
+}
+
+String Path::stem() const
+{
+  if (length() == 0)
+    return "";
+
+  int index = (*this)[-1].indexOfR(".");
+
+  return index == -1 ? (*this)[-1] : (*this)[-1].substring(0, index);
 }
