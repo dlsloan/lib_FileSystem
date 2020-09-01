@@ -54,7 +54,7 @@ Path::Path(String const& path_arg) :
     else if (parts[i] == "..")
     {
       if (parts_.count() == 0 && isAbsolute())
-        throw PathException("cannot backtrack past root");
+        throw_err(ENOENT);
       else if (parts_.count() == 0 || parts_[parts_.count() - 1] == "..")
         parts_ += "..";
       else
@@ -108,12 +108,12 @@ Base::String Path::toString() const
 void Path::verifyPartName(Base::String& part) const
 {
   if (part.length() > 2 && part.startsWith(".."))
-    throw PathException("Path segment may not start with \"..\"");
+    throw_err(ENOENT);
   for (size_t i = 0; i < part.length(); ++i)
   {
     if (!Char::isLetterOrDigit(part[i]) && part[i] != '-' && part[i] != '_' && part[i] != '.' &&
       part[i] != '(' && part[i] != ')')
-      throw PathException(String("Invalid path character \'") + part[i] + "\'");
+      throw_err(EINVAL);
   }
 }
 
@@ -140,13 +140,13 @@ Path Path::trimExt() const
 Path& Path::operator+= (Path const& value)
 {
   if (value.isAbsolute())
-    throw PathException("Cannot append absolute path to end of path");
+    throw_err(EINVAL);
   for (size_t i = 0; i < value.parts_.count(); ++i)
   {
     if (value.parts_[i] == "..")
     {
       if (parts_.count() == 0 && isAbsolute())
-        throw PathException("cannot backtrack past root");
+        throw_err(ENOENT);
       else if (parts_.count() == 0 || parts_[parts_.count() - 1] == "..")
         parts_ += "..";
       else

@@ -23,15 +23,6 @@
 
 namespace FileSystem
 {
-  class PathException : public Base::Exception {
-    public:
-      PathException(char const* msg) :
-        Base::Exception(msg) {}
-
-      PathException(Base::String const& msg) :
-        Base::Exception(msg) {}
-  };
-
   class Path : Base::Stringable {
     public:
       Path();
